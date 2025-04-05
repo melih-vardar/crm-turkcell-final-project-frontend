@@ -1,8 +1,29 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { AiOutlinePlus, AiOutlineSearch, AiOutlineEdit, AiOutlineDelete, AiOutlineEye } from 'react-icons/ai';
+import { AiOutlinePlus, AiOutlineSearch, AiOutlineEdit, AiOutlineDelete, AiOutlineEye, AiOutlineUser } from 'react-icons/ai';
 import { getAllCustomers, deleteCustomer } from '../../api/customers';
+
+// Rastgele renk üretmek için fonksiyon
+const getAvatarColor = (name) => {
+  const colors = [
+    'bg-red-500 text-white', 
+    'bg-blue-500 text-white', 
+    'bg-green-500 text-white',
+    'bg-yellow-500 text-white', 
+    'bg-purple-500 text-white', 
+    'bg-pink-500 text-white',
+    'bg-indigo-500 text-white', 
+    'bg-teal-500 text-white',
+    'bg-orange-500 text-white'
+  ];
+  
+  // İsim stringinin karakter kodlarının toplamını hesapla
+  const hashCode = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  
+  // Renk dizisinden bir renk seç
+  return colors[hashCode % colors.length];
+};
 
 const CustomerList = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +64,13 @@ const CustomerList = () => {
         console.error('Failed to delete customer:', err);
       }
     }
+  };
+  
+  // Adres metnini kısaltan yardımcı fonksiyon
+  const truncateAddress = (address, maxLength = 30) => {
+    if (!address) return 'N/A';
+    if (address.length <= maxLength) return address;
+    return `${address.substring(0, maxLength)}...`;
   };
   
   if (isLoading) {
@@ -95,8 +123,8 @@ const CustomerList = () => {
                 <tr key={customer.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white">
-                        {customer.firstName.charAt(0)}{customer.lastName.charAt(0)}
+                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                        <AiOutlineUser size={24} />
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
@@ -112,7 +140,7 @@ const CustomerList = () => {
                     {customer.phone}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {customer.address}
+                    {truncateAddress(customer.address)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-2">

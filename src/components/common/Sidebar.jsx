@@ -46,8 +46,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           {user && (
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
-                  {user.username?.charAt(0).toUpperCase() || 'U'}
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                  <AiOutlineUser size={20} />
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-900 truncate">{user.username || 'User'}</p>

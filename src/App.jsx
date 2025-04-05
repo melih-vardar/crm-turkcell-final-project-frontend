@@ -13,9 +13,16 @@ import Register from './pages/auth/Register';
 
 // Main Pages
 import Dashboard from './pages/dashboard/Dashboard';
+
+// Customer Pages
 import CustomerList from './pages/customers/CustomerList';
 import CustomerDetail from './pages/customers/CustomerDetail';
 import CustomerForm from './pages/customers/CustomerForm';
+
+// Plan Pages
+import PlanList from './pages/plans/PlanList';
+import PlanDetail from './pages/plans/PlanDetail';
+import PlanForm from './pages/plans/PlanForm';
 
 const queryClient = new QueryClient();
 
@@ -62,8 +69,12 @@ function App() {
               <Route path="/customers/:id" element={<CustomerDetail />} />
               <Route path="/customers/:id/edit" element={<CustomerForm />} />
               
-              <Route path="/plans" element={<div>Plans List</div>} />
-              <Route path="/plans/:id" element={<div>Plan Detail</div>} />
+              {/* Plan routes */}
+              <Route path="/plans" element={<PlanList />} />
+              <Route path="/plans/add" element={<PlanForm />} />
+              <Route path="/plans/:id" element={<PlanDetail />} />
+              <Route path="/plans/:id/edit" element={<PlanForm />} />
+              
               <Route path="/billing" element={<div>Billing List</div>} />
               <Route path="/support" element={<div>Support</div>} />
               <Route path="/analytics" element={<div>Analytics</div>} />

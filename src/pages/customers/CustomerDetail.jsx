@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { AiOutlineEdit, AiOutlineDelete, AiOutlineArrowLeft } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineDelete, AiOutlineArrowLeft, AiOutlineUser } from 'react-icons/ai';
 import { getCustomerById, deleteCustomer } from '../../api/customers';
 
 const CustomerDetail = () => {
@@ -54,6 +54,9 @@ const CustomerDetail = () => {
     return <div className="text-center">Customer not found</div>;
   }
   
+  // Adres bilgisi kontrolü
+  const addressDisplay = customer.address || 'No address provided';
+  
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -79,23 +82,28 @@ const CustomerDetail = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="card">
+          <div className="flex items-center mb-6">
+            <div className="flex-shrink-0 h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+              <AiOutlineUser size={40} />
+            </div>
+            <div className="ml-4">
+              <h2 className="text-xl font-semibold text-gray-900">{customer.firstName} {customer.lastName}</h2>
+              <p className="text-gray-500">{customer.email}</p>
+            </div>
+          </div>
           <h2 className="text-lg font-semibold mb-4">Basic Information</h2>
           <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Full Name</h3>
-              <p className="mt-1 text-gray-900">{customer.firstName} {customer.lastName}</p>
-            </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500">Email</h3>
               <p className="mt-1 text-gray-900">{customer.email}</p>
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500">Phone</h3>
-              <p className="mt-1 text-gray-900">{customer.phone}</p>
+              <p className="mt-1 text-gray-900">{customer.phone || 'No phone number provided'}</p>
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500">Address</h3>
-              <p className="mt-1 text-gray-900">{customer.address}</p>
+              <p className="mt-1 text-gray-900 whitespace-pre-line">{addressDisplay}</p>
             </div>
           </div>
         </div>
