@@ -1,24 +1,23 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { login } = useAuth();
   const navigate = useNavigate();
   
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setError('');
     setIsLoading(true);
     
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      await login(data.email, data.password);
+      navigate('/customers');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -36,7 +35,7 @@ const Login = () => {
         </div>
       )}
       
-      <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
+      <form className="mt-6 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email address
@@ -44,14 +43,20 @@ const Login = () => {
           <div className="mt-1">
             <input
               id="email"
-              name="email"
               type="email"
               autoComplete="email"
-              required
               className="input w-full"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email", { 
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address"
+                }
+              })}
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            )}
           </div>
         </div>
         
@@ -62,14 +67,16 @@ const Login = () => {
           <div className="mt-1">
             <input
               id="password"
-              name="password"
               type="password"
               autoComplete="current-password"
-              required
               className="input w-full"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password", { 
+                required: "Password is required" 
+              })}
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+            )}
           </div>
         </div>
         
@@ -77,9 +84,9 @@ const Login = () => {
           <div className="flex items-center">
             <input
               id="remember-me"
-              name="remember-me"
               type="checkbox"
               className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+              {...register("rememberMe")}
             />
             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
               Remember me
@@ -97,7 +104,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
           >
             {isLoading ? 'Signing in...' : 'Sign in'}
           </button>

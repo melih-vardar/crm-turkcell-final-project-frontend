@@ -14,6 +14,8 @@ import Register from './pages/auth/Register';
 // Main Pages
 import Dashboard from './pages/dashboard/Dashboard';
 import CustomerList from './pages/customers/CustomerList';
+import CustomerDetail from './pages/customers/CustomerDetail';
+import CustomerForm from './pages/customers/CustomerForm';
 
 const queryClient = new QueryClient();
 
@@ -53,9 +55,13 @@ function App() {
               }
             >
               <Route path="/dashboard" element={<Dashboard />} />
+              
+              {/* Customer routes */}
               <Route path="/customers" element={<CustomerList />} />
-              <Route path="/customers/:id" element={<div>Customer Detail</div>} />
-              <Route path="/customers/add" element={<div>Add Customer</div>} />
+              <Route path="/customers/add" element={<CustomerForm />} />
+              <Route path="/customers/:id" element={<CustomerDetail />} />
+              <Route path="/customers/:id/edit" element={<CustomerForm />} />
+              
               <Route path="/plans" element={<div>Plans List</div>} />
               <Route path="/plans/:id" element={<div>Plan Detail</div>} />
               <Route path="/billing" element={<div>Billing List</div>} />
@@ -65,9 +71,9 @@ function App() {
               <Route path="/profile" element={<div>Profile</div>} />
             </Route>
             
-            {/* Redirect root to dashboard or login */}
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            {/* Redirect root to customers instead of dashboard */}
+            <Route path="/" element={<Navigate to="/customers" />} />
+            <Route path="*" element={<Navigate to="/customers" />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

@@ -30,8 +30,27 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await loginWithEmail(email, password);
-      localStorage.setItem('token', response.token);
-      setUser(response.user);
+      
+      // Yanıt içinde token var mı kontrol et ve localStorage'a kaydet
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+      } else if (response.accessToken) {
+        localStorage.setItem('token', response.accessToken);
+      }
+      
+      // Kullanıcı bilgisini state'e kaydet
+      if (response.user) {
+        setUser(response.user);
+      } else {
+        // Eğer response'da user yoksa, getUserInfo ile almayı dene
+        try {
+          const userData = await getUserInfo();
+          setUser(userData);
+        } catch (userErr) {
+          console.error("Failed to get user info after login:", userErr);
+        }
+      }
+      
       setError(null);
       return response;
     } catch (err) {

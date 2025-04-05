@@ -1,37 +1,25 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register } from '../../api/auth';
+import { useForm } from 'react-hook-form';
+import { register as registerUser } from '../../api/auth';
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: 'CUSTOMER_REPRESENTATIVE'
-  });
-  
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
+  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+    defaultValues: {
+      role: 'CUSTOMER_REPRESENTATIVE'
+    }
+  });
+  
   const navigate = useNavigate();
+  const password = watch('password', '');
   
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setError('');
     
-    // Password validation
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-    
-    if (formData.password.length < 8) {
+    if (data.password.length < 8) {
       setError('Password must be at least 8 characters long');
       return;
     }
@@ -40,13 +28,13 @@ const Register = () => {
     
     try {
       const userData = {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        role: data.role
       };
       
-      await register(userData);
+      await registerUser(userData);
       navigate('/login', { state: { message: 'Registration successful. Please login.' } });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
@@ -65,7 +53,7 @@ const Register = () => {
         </div>
       )}
       
-      <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
+      <form className="mt-6 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">
             Username
@@ -73,14 +61,14 @@ const Register = () => {
           <div className="mt-1">
             <input
               id="username"
-              name="username"
               type="text"
               autoComplete="username"
-              required
               className="input w-full"
-              value={formData.username}
-              onChange={handleChange}
+              {...register("username", { required: "Username is required" })}
             />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+            )}
           </div>
         </div>
         
@@ -91,14 +79,20 @@ const Register = () => {
           <div className="mt-1">
             <input
               id="email"
-              name="email"
               type="email"
               autoComplete="email"
-              required
               className="input w-full"
-              value={formData.email}
-              onChange={handleChange}
+              {...register("email", {
+                required: "Email is required", 
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address"
+                }
+              })}
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            )}
           </div>
         </div>
         
@@ -109,14 +103,20 @@ const Register = () => {
           <div className="mt-1">
             <input
               id="password"
-              name="password"
               type="password"
               autoComplete="new-password"
-              required
               className="input w-full"
-              value={formData.password}
-              onChange={handleChange}
+              {...register("password", { 
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters long"
+                }
+              })}
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+            )}
           </div>
         </div>
         
@@ -127,14 +127,17 @@ const Register = () => {
           <div className="mt-1">
             <input
               id="confirmPassword"
-              name="confirmPassword"
               type="password"
               autoComplete="new-password"
-              required
               className="input w-full"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              {...register("confirmPassword", {
+                required: "Please confirm your password",
+                validate: value => value === password || "Passwords do not match"
+              })}
             />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
+            )}
           </div>
         </div>
         
@@ -145,10 +148,8 @@ const Register = () => {
           <div className="mt-1">
             <select
               id="role"
-              name="role"
               className="input w-full"
-              value={formData.role}
-              onChange={handleChange}
+              {...register("role")}
             >
               <option value="CUSTOMER_REPRESENTATIVE">Customer Representative</option>
               <option value="ADMIN">Admin</option>
@@ -160,7 +161,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
           >
             {isLoading ? 'Creating account...' : 'Create account'}
           </button>
