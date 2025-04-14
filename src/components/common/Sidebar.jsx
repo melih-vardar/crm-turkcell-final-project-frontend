@@ -8,7 +8,9 @@ import {
   AiOutlineCustomerService,
   AiOutlineLineChart,
   AiOutlineSetting,
-  AiOutlineLogout
+  AiOutlineLogout,
+  AiOutlineFile,
+  AiOutlineFileDone
 } from 'react-icons/ai';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -16,12 +18,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   const navItems = [
     { to: '/dashboard', icon: <AiOutlineDashboard size={20} />, label: 'Dashboard' },
-    { to: '/customers', icon: <AiOutlineUser size={20} />, label: 'Customers' },
-    { to: '/plans', icon: <AiOutlineShoppingCart size={20} />, label: 'Plans' },
-    { to: '/billing', icon: <AiOutlineFileText size={20} />, label: 'Billing' },
-    { to: '/support', icon: <AiOutlineCustomerService size={20} />, label: 'Support' },
-    { to: '/analytics', icon: <AiOutlineLineChart size={20} />, label: 'Analytics' },
-    { to: '/settings', icon: <AiOutlineSetting size={20} />, label: 'Settings' },
+    { to: '/customers', icon: <AiOutlineUser size={20} />, label: 'Müşteriler' },
+    { to: '/plans', icon: <AiOutlineShoppingCart size={20} />, label: 'Planlar' },
+    { to: '/contracts', icon: <AiOutlineFileDone size={20} />, label: 'Sözleşmeler' },
+    { to: '/bills', icon: <AiOutlineFileText size={20} />, label: 'Faturalar' },
+    { to: '/support/tickets', icon: <AiOutlineCustomerService size={20} />, label: 'Destek Talepleri' },
+    { to: '/analytics', icon: <AiOutlineLineChart size={20} />, label: 'Analitik' },
+    { to: '/settings', icon: <AiOutlineSetting size={20} />, label: 'Ayarlar' },
   ];
 
   return (
@@ -86,7 +89,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               className="flex items-center w-full px-4 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100"
             >
               <AiOutlineLogout size={20} />
-              <span className="ml-3">Logout</span>
+              <span className="ml-3">Çıkış Yap</span>
             </button>
           </div>
         </div>

@@ -2,50 +2,47 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { register as registerUser } from '../../api/auth';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 const Register = () => {
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-  const { register, handleSubmit, formState: { errors }, watch } = useForm({
-    defaultValues: {
-      role: 'CUSTOMER_REPRESENTATIVE'
-    }
-  });
-  
+  const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const navigate = useNavigate();
-  const password = watch('password', '');
   
   const onSubmit = async (data) => {
     setError('');
-    
-    if (data.password.length < 8) {
-      setError('Password must be at least 8 characters long');
-      return;
-    }
-    
-    setIsLoading(true);
+    setIsSubmitting(true);
     
     try {
-      const userData = {
+      await registerUser({
         username: data.username,
         email: data.email,
         password: data.password,
-        role: data.role
-      };
-      
-      await registerUser(userData);
-      navigate('/login', { state: { message: 'Registration successful. Please login.' } });
+        role: "CUSTOMER_REPRESENTATIVE"
+      });
+      navigate('/login');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
   
   return (
     <div>
-      <h2 className="mt-2 text-center text-2xl font-bold text-gray-900">Create a new account</h2>
+      <h2 className="mt-2 text-center text-2xl font-bold text-gray-900">Create your account</h2>
       
       {error && (
         <div className="mt-4 bg-red-50 border-l-4 border-red-500 p-4">
@@ -64,7 +61,13 @@ const Register = () => {
               type="text"
               autoComplete="username"
               className="input w-full"
-              {...register("username", { required: "Username is required" })}
+              {...register("username", { 
+                required: "Username is required",
+                minLength: {
+                  value: 3,
+                  message: "Username must be at least 3 characters long"
+                }
+              })}
             />
             {errors.username && (
               <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
@@ -82,8 +85,8 @@ const Register = () => {
               type="email"
               autoComplete="email"
               className="input w-full"
-              {...register("email", {
-                required: "Email is required", 
+              {...register("email", { 
+                required: "Email is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   message: "Invalid email address"
@@ -100,20 +103,31 @@ const Register = () => {
           <label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Password
           </label>
-          <div className="mt-1">
+          <div className="mt-1 relative">
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoComplete="new-password"
-              className="input w-full"
+              className="input w-full pr-10"
               {...register("password", { 
                 required: "Password is required",
                 minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters long"
+                  value: 6,
+                  message: "Password must be at least 6 characters long"
                 }
               })}
             />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+              ) : (
+                <AiOutlineEye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
             )}
@@ -124,17 +138,27 @@ const Register = () => {
           <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
             Confirm Password
           </label>
-          <div className="mt-1">
+          <div className="mt-1 relative">
             <input
               id="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              className="input w-full"
-              {...register("confirmPassword", {
+              type={showConfirmPassword ? "text" : "password"}
+              className="input w-full pr-10"
+              {...register("confirmPassword", { 
                 required: "Please confirm your password",
-                validate: value => value === password || "Passwords do not match"
+                validate: (value) => value === watch('password') || "Passwords do not match"
               })}
             />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              onClick={toggleConfirmPasswordVisibility}
+            >
+              {showConfirmPassword ? (
+                <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+              ) : (
+                <AiOutlineEye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
             {errors.confirmPassword && (
               <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
             )}
@@ -142,28 +166,12 @@ const Register = () => {
         </div>
         
         <div>
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-            Role
-          </label>
-          <div className="mt-1">
-            <select
-              id="role"
-              className="input w-full"
-              {...register("role")}
-            >
-              <option value="CUSTOMER_REPRESENTATIVE">Customer Representative</option>
-              <option value="ADMIN">Admin</option>
-            </select>
-          </div>
-        </div>
-        
-        <div>
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isSubmitting}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
           >
-            {isLoading ? 'Creating account...' : 'Create account'}
+            {isSubmitting ? 'Creating account...' : 'Create account'}
           </button>
         </div>
       </form>
@@ -183,7 +191,7 @@ const Register = () => {
             to="/login"
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
           >
-            Sign in
+            Sign in to your account
           </Link>
         </div>
       </div>

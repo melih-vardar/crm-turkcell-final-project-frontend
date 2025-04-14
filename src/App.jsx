@@ -23,6 +23,21 @@ import CustomerForm from './pages/customers/CustomerForm';
 import PlanList from './pages/plans/PlanList';
 import PlanDetail from './pages/plans/PlanDetail';
 import PlanForm from './pages/plans/PlanForm';
+import BasicPlanCreate from './pages/plans/BasicPlanCreate';
+import BasicPlanDetail from './pages/plans/BasicPlanDetail';
+import BasicPlanEdit from './pages/plans/BasicPlanEdit';
+
+// Contract Pages
+import ContractList from './pages/contracts/ContractList';
+import ContractDetail from './pages/contracts/ContractDetail';
+import ContractForm from './pages/contracts/ContractForm';
+
+// Bill Pages
+import BillList from './pages/bills/BillList';
+import BillCreate from './pages/bills/BillCreate';
+
+// Support Pages
+import TicketList from './pages/support/TicketList';
 
 const queryClient = new QueryClient();
 
@@ -68,6 +83,7 @@ function App() {
               <Route path="/customers/add" element={<CustomerForm />} />
               <Route path="/customers/:id" element={<CustomerDetail />} />
               <Route path="/customers/:id/edit" element={<CustomerForm />} />
+              <Route path="/customers/:id/bills" element={<BillList />} />
               
               {/* Plan routes */}
               <Route path="/plans" element={<PlanList />} />
@@ -75,16 +91,36 @@ function App() {
               <Route path="/plans/:id" element={<PlanDetail />} />
               <Route path="/plans/:id/edit" element={<PlanForm />} />
               
-              <Route path="/billing" element={<div>Billing List</div>} />
-              <Route path="/support" element={<div>Support</div>} />
+              {/* Basic Plan routes */}
+              <Route path="/plans/basic/add" element={<BasicPlanCreate />} />
+              <Route path="/plans/basic/:id" element={<BasicPlanDetail />} />
+              <Route path="/plans/basic/:id/edit" element={<BasicPlanEdit />} />
+              
+              {/* Contract routes */}
+              <Route path="/contracts" element={<ContractList />} />
+              <Route path="/contracts/add" element={<ContractForm />} />
+              <Route path="/contracts/:id" element={<ContractDetail />} />
+              <Route path="/contracts/:id/edit" element={<ContractForm />} />
+              
+              {/* Bill routes */}
+              <Route path="/bills" element={<BillList />} />
+              <Route path="/bills/create" element={<BillCreate />} />
+              <Route path="/bills/:id" element={<div>Bill Detail</div>} />
+              <Route path="/bills/add" element={<div>New Bill</div>} />
+              
+              {/* Support routes */}
+              <Route path="/support/tickets" element={<TicketList />} />
+              <Route path="/support/tickets/:id" element={<div>Ticket Detail</div>} />
+              <Route path="/support/tickets/add" element={<div>New Ticket</div>} />
+              
               <Route path="/analytics" element={<div>Analytics</div>} />
               <Route path="/settings" element={<div>Settings</div>} />
               <Route path="/profile" element={<div>Profile</div>} />
             </Route>
             
-            {/* Redirect root to customers instead of dashboard */}
-            <Route path="/" element={<Navigate to="/customers" />} />
-            <Route path="*" element={<Navigate to="/customers" />} />
+            {/* Redirect root to dashboard */}
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

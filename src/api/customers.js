@@ -28,4 +28,16 @@ export const updateCustomer = async (id, customerData) => {
 export const deleteCustomer = async (id) => {
   await axiosInstance.delete(`/api/customers/${id}`);
   return true;
+};
+
+// Get customer bills
+export const getCustomerBills = async (id) => {
+  const response = await axiosInstance.get(`/api/customers/${id}/bills`);
+  return response.data;
+};
+
+// Get customer contracts
+export const getCustomerContracts = async (id) => {
+  const response = await axiosInstance.get(`/api/customers/${id}/contracts`);
+  return response.data;
 }; 

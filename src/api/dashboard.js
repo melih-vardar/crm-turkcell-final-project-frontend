@@ -1,31 +1,25 @@
-// import axiosInstance from './axios';
+import axiosInstance from './axios';
 
-// // Get dashboard statistics
-// export const getDashboardStats = async () => {
-//   const response = await axiosInstance.get('/analytics-service/api/dashboard/stats');
-//   return response.data;
-// };
+// Get customer behavior analytics
+export const getCustomerBehaviorAnalytics = async () => {
+  const response = await axiosInstance.get('/api/analytics/customer-behavior');
+  return response.data;
+};
 
-// // Get recent activities
-// export const getRecentActivities = async (limit = 10) => {
-//   const response = await axiosInstance.get(`/analytics-service/api/dashboard/activities?limit=${limit}`);
-//   return response.data;
-// };
+// Get customer support behavior analytics
+export const getCustomerSupportBehaviorAnalytics = async () => {
+  const response = await axiosInstance.get('/api/analytics/customer-support-behavior');
+  return response.data;
+};
 
-// // Get revenue chart data
-// export const getRevenueChartData = async (period = 'monthly') => {
-//   const response = await axiosInstance.get(`/analytics-service/api/dashboard/revenue-chart?period=${period}`);
-//   return response.data;
-// };
+// Get user creation analytics
+export const getUserCreationAnalytics = async () => {
+  const response = await axiosInstance.get('/api/analytics/user-behavior/user-create-analytics');
+  return response.data;
+};
 
-// // Get customer growth chart data
-// export const getCustomerGrowthData = async (period = 'monthly') => {
-//   const response = await axiosInstance.get(`/analytics-service/api/dashboard/customer-growth?period=${period}`);
-//   return response.data;
-// };
-
-// // Get plan distribution data
-// export const getPlanDistributionData = async () => {
-//   const response = await axiosInstance.get('/analytics-service/api/dashboard/plan-distribution');
-//   return response.data;
-// }; 
+// Get login analytics
+export const getLoginAnalytics = async () => {
+  const response = await axiosInstance.get('/api/analytics/user-behavior/login-analytics');
+  return response.data;
+}; 
